@@ -7,19 +7,31 @@ const router = express.Router();
 
 //Endpoint #1
 router.post('/create_course', (req, res) => {
-    const accountType = req.body.type;
-    const cname = req.body.cname
-    const lid = req.body.lid
-    accountType === "admin" ? res.send(`${cname} Course created for ${lid}`) : res.send("Access not granted");
+    try {
+        const accountType = req.body.type;
+        const cname = req.body.cname
+        const lid = req.body.lid
+        accountType === "admin" ? res.send(`${cname} Course created for ${lid}`) : res.send("Access not granted");
+    } catch(err){
+        console.log(err);
+    }
 })
 
 router.get('/get_courses', (req, res) => {
-    res.send("Courses retrieved");
+    try{
+        res.send("Courses retrieved");
+    } catch(err){
+        console.log(err);
+    }
 })
 
 router.get('/get_student_course:id', (req, res) => {
-    const sid = req.params.id;
-    res.send(`Student courses retrieved for student with id number#${sid}`);
+    try {
+        const sid = req.params.id;
+        res.send(`Student courses retrieved for student with id number#${sid}`);
+    } catch(err){
+        console.log(err);
+    }
 })
 
 router.get('/get_teacher_course:id', (req, res) => {
@@ -28,10 +40,14 @@ router.get('/get_teacher_course:id', (req, res) => {
 })
 
 router.post('/enrol', (req, res) => {
-    const sid = req.body.sid;
-    const cid = req.body.cid;
-    const grade = 0;
-    res.send("Enrolled in course")
+    try{   
+        const sid = req.body.sid;
+        const cid = req.body.cid;
+        const grade = 0;
+        res.send("Enrolled in course")
+    } catch(err){
+        console.log(err)
+    }
 })
 
 router.get('/get_members:id', (req, res) => {
@@ -71,20 +87,28 @@ router.get('/get_disc_thread:id', (req, res) => {
 })
 
 router.post('/create_disc_thread', (req, res) => {
-    const title = req.body.title
-    const creator = req.body.creator
-    const content = req.body.content
-    const date = new Date(Date.now())
-    const fid = req.body.fid //forum id
-    res.send(`Discussion thread created for ${creator} about ${title} on ${date}`)
+    try{   
+        const title = req.body.title
+        const creator = req.body.creator
+        const content = req.body.content
+        const date = new Date(Date.now())
+        const fid = req.body.fid //forum id
+        res.send(`Discussion thread created for ${creator} about ${title} on ${date}`)
+    } catch(err){
+        console.log(err)
+    }
 })
 
 router.post('/create_reply', (req, res) => {
-    const tid = req.body.tid //thread id
-    const author = req.body.author
-    const date = new Date(Date.now())
-    const content = req.body.content
-    res.send(`Reply made for ${author} on ${date}`)
+    try{   
+        const tid = req.body.tid //thread id
+        const author = req.body.author
+        const date = new Date(Date.now())
+        const content = req.body.content
+        res.send(`Reply made for ${author} on ${date}`)
+    } catch(err){
+        console.log(err)
+    }
 })
 
 router.post('/create_course_content', (req, res) => {
