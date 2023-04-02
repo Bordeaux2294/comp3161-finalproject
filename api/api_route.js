@@ -40,6 +40,7 @@ router.get('/get_teacher_course:id', (req, res) => {
 })
 
 router.post('/enrol', (req, res) => {
+    // register for courses
     try{   
         const sid = req.body.sid;
         const cid = req.body.cid;
@@ -56,6 +57,7 @@ router.get('/get_members:id', (req, res) => {
 })
 
 router.get('/get_calendar_events:id', (req, res) => {
+    // get calender events for a specific student
     const ceid = req.params.id;
     res.send("Calendar events retrieved")
 })
