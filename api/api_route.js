@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const mysql = require('mysql')
 require('dotenv/config')
 
 const router = express.Router();
@@ -56,21 +57,142 @@ router.get('/get_members:id', (req, res) => {
     res.send("Members found");
 })
 
-router.get('/get_calendar_events:id', (req, res) => {
-    // get calender events for a specific student
-    const ceid = req.params.id;
-    res.send("Calendar events retrieved")
+router.get('/get_calendar_events/:id', (req, res) => {
+    // get all calender events for a specific course
+    try {
+        const connection = mysql.createConnection({
+            host: 'localhost',
+            user: 'root',
+            password: '',
+            database:'school',
+            multipleStatements:true
+        });
+        
+        connection.connect((err) => {
+            if(err){
+                throw err;
+            }else{
+                console.log("Connection successful!")
+            }
+        })
+        const courseID = req.params.id
+        
+        const values = [courseID]
+        const queryStatement = `SELECT * FROM event WHERE cid=?;`
+        connection.query(queryStatement, values, (error, results, fields)=> {
+            if(error){
+                throw error;
+            }
+            let responseLst = []
+            for(let index = 0; index < results.length; index++){
+                responseLst.push(results[index])
+            }
+
+            res.status(200).send(results)
+        })
+    
+        connection.end((err) => {
+            if(err){
+                throw err;
+            }
+            console.log("Connection closed successfully!")
+        })
+        
+       } catch (error) {
+            console.log(error);
+            res.status(500).send()
+       }
 })
 
-router.get('/get_student_calendar_events', (req, res) => {
-    const sid = req.body.id;
-    const date = req.body.date;
-    res.send("Calendar events found for sid: ", sid, " on date: ", date);
+router.get('/get_student_calendar_events/:studentID/:date', (req, res) => {
+    try {
+        const connection = mysql.createConnection({
+            host: 'localhost',
+            user: 'root',
+            password: '',
+            database:'school',
+            multipleStatements:true
+        });
+        
+        connection.connect((err) => {
+            if(err){
+                throw err;
+            }else{
+                console.log("Connection successful!")
+            }
+        })
+        const studentID = req.params.studentID;
+        const date = req.params.date;
+        const values = [studentID, date]
+        const queryStatement = `SELECT * FROM event WHERE uid=? AND edateofevent=?;`
+        connection.query(queryStatement, values, (error, results, fields)=> {
+            if(error){
+                throw error;
+            }
+    
+            res.status(200).send(results)
+        })
+    
+        connection.end((err) => {
+            if(err){
+                throw err;
+            }
+            console.log("Connection closed successfully!")
+        })
+
+       } catch (error) {
+            console.log(error);
+            res.status(500).send()
+       }
 })
 
+var counter = 1
 router.post('/create_calendar_events', (req, res) => {
-    const cid = req.body.id;
-    res.send("Calendar events created for sid: ", cid);
+   try {
+    const connection = mysql.createConnection({
+        host: 'localhost',
+        user: 'root',
+        password: '',
+        database:'school',
+        multipleStatements:true
+    });
+
+    connection.connect((err) => {
+        if(err){
+            throw err;
+        }else{
+            console.log("Connection successful!")
+        }
+    })
+    const courseID = req.body.courseID
+    const userID = req.body.userID
+    const eventName = req.body.eventName
+    const eventDate = req.body.eventDate
+    const values = [counter, courseID, userID, eventName, eventDate]
+    const queryStatement = `INSERT INTO event (evid, cid, uid, ename, edatecreated, edateofevent) VALUES(?, ?, ?, ?, NOW(), ?);`
+    connection.query(queryStatement, values, (error, results, fields)=> {
+        if(error){
+            throw error;
+        }
+
+        console.log("Record inserted successfully!")
+    })
+
+    connection.end((err) => {
+        if(err){
+            throw err;
+        }
+        console.log("Connection closed successfully!")
+    })
+
+    console.log(req.body)
+    
+    res.status(200).send("Calendar event created successfully!");
+    counter = counter + 1
+   } catch (error) {
+        console.log(error);
+        res.status(500).send()
+   }
 })
 
 router.get('/get_forums:id', (req, res) => {
