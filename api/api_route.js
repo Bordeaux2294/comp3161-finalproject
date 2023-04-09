@@ -90,9 +90,15 @@ router.post('/create_forum', (req, res) => {
     res.send("Forum created");
 })
 
-router.get('/get_disc_thread:id', (req, res) => {
-    const cid = req.params.id;
-    res.send("Discussion thread created");
+router.get('/get_disc_thread/:id', (req, res) => {
+    const fid = req.params.id;
+    query = `SELECT * FROM discussionthread WHERE fid = ${fid}`
+    connection.query(query, (err, result) => {
+        if (err) throw err;
+        const thread = result[0]
+        console.log(thread)
+        res.send(thread)
+    })
 })
 
 router.post('/create_disc_thread', (req, res) => {
@@ -120,14 +126,29 @@ router.post('/create_disc_thread', (req, res) => {
     }
   })
   
-
 router.post('/create_reply', (req, res) => {
     try{   
         const tid = req.body.tid //thread id
-        const author = req.body.author
-        const date = new Date(Date.now())
-        const content = req.body.content
-        res.send(`Reply made for ${author} on ${date}`)
+        const fid = req.body.fid
+        const cid = req.body.cid
+        const uid = req.body.uid
+        const rname = req.body.rname
+        const parent_rid = req.body.parent_rid
+        const date = new Date().toISOString().slice(0, 19).replace('T', ' ')
+        const rreplyamount = 0
+        
+        // Insert the new reply into the 'reply' table, with the appropriate parent_id if a parent reply exists.
+        let query
+        if (parent_rid){
+            query = `INSERT INTO reply (tid, fid, cid, uid, rname, rdatecreated, rreplyamount, parent_rid) VALUES (${tid}, ${fid}, '${cid}', ${uid}, "${rname}", '${date}', ${rreplyamount}, ${parent_rid})`;
+        }else{
+            query = `INSERT INTO reply (tid, fid, cid, uid, rname, rdatecreated, rreplyamount) VALUES (${tid}, ${fid}, '${cid}', ${uid}, "${rname}", '${date}', ${rreplyamount})`;
+        }
+        // Execute the SQL query
+        connection.query(query, (err) => {
+            if (err) throw err;
+            res.send('Reply has been made ');
+        });
     } catch(err){
         console.log(err)
     }
@@ -161,34 +182,40 @@ router.post('/submit_assignment', (req, res) => {
     })
 })
 
-router.put('/grade_assignment', (req, res) => {
-    const uid = req.body.uid
-    const aid = req.body.aid
-    const grade = req.body.grade
-    let mark = `UPDATE assignment SET agrade = ${grade} WHERE aid = ${aid} AND sid = ${uid}`
-    connection.query(mark, (err) => {
-        if (err) throw err;
-        let length = `SELECT COUNT(*) as amount FROM assignment WHERE sid = ${uid} AND cid=(SELECT cid FROM assignment WHERE aid = ${aid})`
-        connection.query(length, (err, result) => {
+router.post('/submit_grade', (req, res) => {
+    const uid = req.body.uid;
+    const aid = req.body.aid;
+    const grade = req.body.grade;
+  
+    const updateAssignmentQuery = `UPDATE assignment SET agrade = ${grade} WHERE aid = ${aid} AND sid = ${uid}`;
+  
+    connection.query(updateAssignmentQuery, (err) => {
+      if (err) {
+        throw err;
+      }
+        const getGradesQuery = `SELECT AVG(agrade) as average FROM assignment WHERE sid = ${uid} AND cid = (SELECT cid FROM assignment WHERE aid = ${aid})`;
+  
+        connection.query(getGradesQuery, (err, result) => {
+          if (err) throw err;
+          const avg = result[0].average
+          const empty = `SELECT count(*) as size FROM grades WHERE eid = (SELECT eid FROM enroll WHERE uid = ${uid} AND cid = (SELECT cid FROM assignment WHERE aid = ${aid}))`
+          connection.query(empty, (err, result) => {
             if (err) throw err;
-            let size = result[0].amount;
-            let query = `SELECT grade
-                FROM grades
-                JOIN enroll ON enroll.eid = grades.eid
-                WHERE enroll.uid = ${uid} AND enroll.cid = (SELECT cid FROM assignment WHERE aid = ${aid})`
-            connection.query(query, (err, result) => {
+            let query2
+            if (result[0].size === 0){
+                query2 = `INSERT INTO grades (eid, grade) SELECT eid, ${avg} FROM enroll WHERE uid = ${uid} AND cid = (SELECT cid FROM assignment WHERE aid = ${aid})`;
+            }else{
+                query2 = `UPDATE grades SET grade = ${avg} WHERE eid = (SELECT eid  FROM enroll WHERE uid = ${uid} AND cid = (SELECT cid FROM assignment WHERE aid = ${aid}))`; 
+            }
+            connection.query(query2, (err)=>{
                 if (err) throw err;
-                console.log(result)
-                let ngrade = (result + grade)/size
-                let query2 = `UPDATE grades SET grade = ${ngrade} WHERE eid = (SELECT eid FROM enroll WHERE uid=${uid})`
-                connection.query(query2, (err, result) => {
-                    if (err) throw err;
-                    res.send("Grade updated")
-                })
+                res.send("Grade has been updated successfully")
             })
-        })
-    })
-})
+          })
+        });
+    });
+});
+  
 
 router.get('/fifty_students', (req, res) => {
     const query = `
@@ -213,11 +240,16 @@ router.get('/five_or_more_courses', (req, res) => {
     CREATE VIEW five_or_more_courses AS
     SELECT sid, sname
     FROM student
-    WHERE sid IN (
-        SELECT uid
-        FROM enroll
-        GROUP BY uid
-        HAVING COUNT(DISTINCT cid) >= 5
+    WHERE semail IN (
+        SELECT uemail
+        FROM users
+        WHERE uid IN (
+            SELECT uid
+            FROM enroll
+            WHERE etype = 'Student'
+            GROUP BY uid
+            HAVING COUNT(DISTINCT cid) >= 3
+        )
     )`
     connection.query(query, (err)=>{
         if (err) throw err;
@@ -230,12 +262,16 @@ router.get('/three_or_more_courses', (req, res) => {
     CREATE VIEW three_or_more AS
     SELECT stid, stname
     FROM staff
-    WHERE stid IN (
-        SELECT uid
-        FROM enroll
-        WHERE etype = 'instructor'
-        GROUP BY uid
-        HAVING COUNT(DISTINCT cid) >= 3
+    WHERE stemail IN (
+        SELECT uemail
+        FROM users
+        WHERE uid IN (
+            SELECT uid
+            FROM enroll
+            WHERE etype = 'Lecturer'
+            GROUP BY uid
+            HAVING COUNT(DISTINCT cid) >= 3
+        )
     )`
     connection.query(query, (err)=>{
         if (err) throw err;
