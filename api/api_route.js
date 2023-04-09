@@ -1,8 +1,17 @@
 const express = require('express');
+const mysql = require('mysql');
 const bodyParser = require('body-parser');
 require('dotenv/config')
 
 const router = express.Router();
+
+const connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'school'
+  });
+
 
 
 //Endpoint #1
@@ -19,25 +28,44 @@ router.post('/create_course', (req, res) => {
 
 router.get('/get_courses', (req, res) => {
     try{
-        res.send("Courses retrieved");
+        const query = `SELECT * FROM course`;
+        connection.query(query, (err, rows) => {
+            if (err) throw err;
+            console.log('Courses retrieved');
+            res.send(rows);
+        });
     } catch(err){
         console.log(err);
     }
 })
 
-router.get('/get_student_course:id', (req, res) => {
-    try {
-        const sid = req.params.id;
-        res.send(`Student courses retrieved for student with id number#${sid}`);
-    } catch(err){
-        console.log(err);
-    }
-})
 
-router.get('/get_teacher_course:id', (req, res) => {
-    const tid = req.params.id;
-    res.send("Teacher courses retrieved");
-})
+
+router.get('/get_student_course/:uid', (req, res) => {
+    const uid = req.params.uid;
+    const query = `SELECT * FROM enroll WHERE uid = '${uid}'`;
+    connection.query(query, (error, results) => {
+        if (error) throw error;
+        const courses = results.map((result) => {
+            return result.cid;
+        });
+        res.json({ uid: uid, courses: courses });
+    });
+});
+
+
+router.get('/get_lecturer_course/:uid', (req, res) => {
+    const uid = req.params.uid;
+    const query = `SELECT * FROM enroll WHERE uid = '${uid}'`;
+    connection.query(query, (error, results) => {
+        if (error) throw error;
+        const courses = results.map((result) => {
+            return result.cid;
+        });
+        res.json({ uid: uid, courses: courses });
+    });
+});
+  
 
 router.post('/enrol', (req, res) => {
     // register for courses

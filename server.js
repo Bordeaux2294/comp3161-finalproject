@@ -1,5 +1,3 @@
-
-
 const express = require('express');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
@@ -15,38 +13,55 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use('/api', apiRouter);
 
-app.post('/register', async (req, res) => {
-    try{    
-        const userid = req.body.userid
-        const password = req.body.password
-        const accountType = req.body.type
-        const saltRounds = 10
-        const hash = await bcrypt.hash(password, saltRounds);
-        console.log(userid, ", HashedPassword: ", hash, ", ",accountType);
-        res.send("Registered successfully");
-    } catch(err){
-        console.log(err);
-    }
-})
+const connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'school'
+  });
 
-app.post('/login', (req, res) => {
-    const userid = req.body.userid
-    const password = req.body.password
-    let query;//Query to get user password
-    let result;
-    //bcrypt.compare(password, results) ? res.send("Logged in successfully") : res.send("Password mismatch")
-    console.log('login: ',userid, ", ",password);
-    res.send("Logged in successfully");
-})
 
-app.listen(process.env.PORT, ()=>{
-    console.log('listening on port '+process.env.PORT);
-    for(let i=0;i<20;i++){
-        const first_name = faker.name.firstName();
-        const last_name = faker.name.lastName();
-        const email = faker.internet.email(first_name, last_name);
-        const address = faker.address.streetAddress() + ", " + faker.address.cityName() + ", Jamaica";
-        console.log(`First name: ${first_name} and last name: ${last_name} has an email
-        of ${email} and lives in ${address}`);
-    }
-})
+  app.post('/register/:uid/:upwd/:utype/:uemail', (req, res) => {
+    const uid = req.params.uid;
+    const upwd = req.params.upwd;
+    const utype = req.params.utype;
+    const uemail = req.params.uemail;
+    const query = 'INSERT INTO users (uid, upwd, utype, uemail) VALUES (?, ?, ?, ?)';
+    connection.query(query, [uid, upwd, utype, uemail], (err, result) => {
+        if (err) {
+            console.error(err);
+            res.status(500).send('Error inserting data');
+          } else {
+            console.log(`Inserted user ${uemail} into database`);
+            res.json({ message: 'User registered successfully' });
+          }
+        });
+      });
+  
+app.post('/login_user/:uid/:upwd', (req, res) => {
+    const uid = req.params.uid;
+    const upwd = req.params.upwd;
+    const query = 'SELECT uid, upwd FROM users WHERE uid = ? AND upwd = ?';
+    connection.query(query, [uid, upwd], (err, result) => {
+      if (err) {
+        console.error(err);
+        res.status(500).send('Error fetching data');
+      } else {
+        if (result.length > 0) {
+          console.log(`Login successful for uid ${uid}`);
+          res.json({ message: 'Login successful' });
+        } else {
+          console.log(`Invalid credentials for uid ${uid}`);
+          res.status(401).json({ message: 'Invalid credentials' });
+        }
+      }
+    });
+  });
+  
+
+
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+    console.log(`Server is listening on port ${PORT}`);
+  });
