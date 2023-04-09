@@ -298,11 +298,11 @@ router.get('/most_enrolled', (req, res) => {
 router.get('/highest_averages', (req, res) => {
     const query = `
     CREATE VIEW highest_average AS
-    SELECT sid, sname, AVG(grade) AS avg_grade
+    SELECT sid, sname, grade AS avg_grade
     FROM grades
     JOIN enroll ON grades.eid = enroll.eid
-    JOIN student ON enroll.uid = student.sid
-    GROUP BY sid
+    JOIN users ON enroll.uid = users.uid
+    JOIN student ON users.uemail = student.semail
     ORDER BY avg_grade DESC
     LIMIT 10
     `
