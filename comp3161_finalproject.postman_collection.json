@@ -1,0 +1,83 @@
+{
+	"info": {
+		"_postman_id": "2cb698a1-984a-40b2-acb7-613fc924464e",
+		"name": "comp3161_finalproject",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26808350"
+	},
+	"item": [
+		{
+			"name": "retrieve members",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}get_members/math1",
+					"host": [
+						"{{url}}get_members"
+					],
+					"path": [
+						"math1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create_course",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/create_course/frig534/freight rains dormant 4/11",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"create_course",
+						"frig534",
+						"freight rains dormant 4",
+						"11"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "enroll_lecturer",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{url}}enroll_course_lec/comp42/45",
+					"host": [
+						"{{url}}enroll_course_lec"
+					],
+					"path": [
+						"comp42",
+						"45"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "enroll_student",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{url}}enroll_course_stud/frig113/64565",
+					"host": [
+						"{{url}}enroll_course_stud"
+					],
+					"path": [
+						"frig113",
+						"64565"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
