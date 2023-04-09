@@ -41,12 +41,12 @@ app.post('/login', (req, res) => {
 
 app.listen(process.env.PORT, ()=>{
     console.log('listening on port '+process.env.PORT);
-    for(let i=0;i<20;i++){
-        const first_name = faker.name.firstName();
-        const last_name = faker.name.lastName();
-        const email = faker.internet.email(first_name, last_name);
-        const address = faker.address.streetAddress() + ", " + faker.address.cityName() + ", Jamaica";
-        console.log(`First name: ${first_name} and last name: ${last_name} has an email
-        of ${email} and lives in ${address}`);
-    }
+    // for(let i=0;i<20;i++){
+    //     const first_name = faker.name.firstName();
+    //     const last_name = faker.name.lastName();
+    //     const email = faker.internet.email(first_name, last_name);
+    //     const address = faker.address.streetAddress() + ", " + faker.address.cityName() + ", Jamaica";
+    //     console.log(`First name: ${first_name} and last name: ${last_name} has an email
+    //     of ${email} and lives in ${address}`);
+    // }
 })
