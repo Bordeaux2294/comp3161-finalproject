@@ -5,6 +5,14 @@ require('dotenv/config')
 
 const router = express.Router();
 
+const connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: process.env.PASSWORD,
+    database:'school',
+    multipleStatements:true
+});
+
 
 //Endpoint #1
 router.post('/create_course', (req, res) => {
@@ -105,15 +113,7 @@ router.get('/get_calendar_events/:id', (req, res) => {
 })
 
 router.get('/get_student_calendar_events/:studentID/:date', (req, res) => {
-    try {
-        const connection = mysql.createConnection({
-            host: 'localhost',
-            user: 'root',
-            password: '',
-            database:'school',
-            multipleStatements:true
-        });
-        
+    try {     
         connection.connect((err) => {
             if(err){
                 throw err;
@@ -149,13 +149,6 @@ router.get('/get_student_calendar_events/:studentID/:date', (req, res) => {
 var counter = 1
 router.post('/create_calendar_events', (req, res) => {
    try {
-    const connection = mysql.createConnection({
-        host: 'localhost',
-        user: 'root',
-        password: '',
-        database:'school',
-        multipleStatements:true
-    });
 
     connection.connect((err) => {
         if(err){
