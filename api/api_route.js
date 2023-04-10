@@ -138,22 +138,8 @@ router.post('/enrol', (req, res) => {
 })
 
 router.get('/get_members/:id', (req, res) => {
-    try {
-        const connection = mysql.createConnection({
-            host: 'localhost',
-            user: 'root',
-            password: '',
-            database:'school',
-            multipleStatements:true
-        });
+    try {        
         
-        connection.connect((err) => {
-            if(err){
-                throw err;
-            }else{
-                console.log("Connection successful!")
-            }
-        })
         const courseID = req.params.id
         
         const values = [courseID]
@@ -170,12 +156,6 @@ router.get('/get_members/:id', (req, res) => {
             res.status(200).send(results)
         })
     
-        connection.end((err) => {
-            if(err){
-                throw err;
-            }
-            console.log("Connection closed successfully!")
-        })
         
        } catch (error) {
             console.log(error);
