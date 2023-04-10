@@ -1,10 +1,17 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const mysql = require('mysql');
 require('dotenv/config')
 
 const router = express.Router();
 
-
+const connection = mysql.createConnection({
+    multipleStatements: true,
+    user: 'root',
+    host: 'localhost',
+    password: process.env.PASSWORD,
+    database: 'school'
+})
 //Endpoint #1
 router.post('/create_course', (req, res) => {
     try {
@@ -74,14 +81,76 @@ router.post('/create_calendar_events', (req, res) => {
 })
 
 router.get('/get_forums:id', (req, res) => {
-    const cid = req.params.id;
-    res.send("Forum for course ", cid," retrieved");
+        const courseID = req.params.id
+        
+        const values = [courseID]
+        const queryStatement = `SELECT * from discussionforum WHERE cid=?;`
+        connection.query(queryStatement, values, (error, results, fields)=> {
+            if(error){
+                throw error;
+            }
+            let responseLst = []
+            for(let index = 0; index < results.length; index++){
+                responseLst.push(results[index])
+            }
+
+            res.status(200).send(results)
+        })
+    
 })
 
 router.post('/create_forum', (req, res) => {
-    const cid = req.body.id;
-    res.send("Forum created");
+    const cid = req.body.cid;
+    const fid = req.body.fid;
+    const fname = req.body.fname;
+    const fthreadamt = 0;
+    const values = [fid,cid,fname,fthreadamt]
+    const queryStatement = "INSERT INTO discussionforum (fid,cid,fname,fdatecreate,fthreadamt) values (?,?,?,getdate(),?)"
+    connection.query(querystatement,values, (err,results) => {
+        if (err) throw err;
+        res.status(200).send("Forum created successfully")})
+
 })
+router.post('/create_section', (req, res) => {
+    const seid = req.body.seid;
+    const cid = req.body.cid;
+    const secname = req.body.secname;
+    const values = [seid,cid,secname]
+    const queryStatement = "INSERT INTO section (seid,cid,secname) values (?,?,?)"
+    connection.query(querystatement,values, (err,results) => {
+        if (err) throw err;
+        res.status(200).send("Section created successfully")})
+
+})
+router.post('/create_sectionitem', (req, res) => {
+    const ssid = req.body.ssid;
+    const seid = req.body.seid;
+    const uid = req.body.uid
+    const values = [ssid,seid,uid]
+    const queryStatement = "INSERT INTO sectionitem (ssid,seid,uid,ssdatecreated) values (?,?,?,getdate())"
+    connection.query(querystatement,values, (err,results) => {
+        if (err) throw err;
+        res.status(200).send("Sectionitem created successfully")})
+
+})
+router.get('/get_courseitems/:courseid', (req, res) => {
+    const courseID = req.params.courseid
+    const values = [courseID]
+    const queryStatement = "`select sectionitem.ssid from sectionitem inner join section on sectionitem.seid = section.seid where section.cid=?"
+    connection.query(queryStatement, values, (error, results, fields)=> {
+        if(error){
+            throw error;
+        }
+        let responseLst = []
+        for(let index = 0; index < results.length; index++){
+            responseLst.push(results[index])
+        }
+
+        res.status(200).send(results)
+    })
+
+})
+
 
 router.get('/get_disc_thread:id', (req, res) => {
     const cid = req.params.id;
