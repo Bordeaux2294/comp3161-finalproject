@@ -1,8 +1,16 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const mysql = require('mysql');
 require('dotenv/config')
 
 const router = express.Router();
+const connection = mysql.createConnection({
+    multipleStatements: true,
+    user: 'root',
+    host: 'localhost',
+    password: process.env.PASSWORD,
+    database: 'school'
+})
 
 
 //Endpoint #1
