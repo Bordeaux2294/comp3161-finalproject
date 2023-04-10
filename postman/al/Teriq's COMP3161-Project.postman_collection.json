@@ -1,0 +1,174 @@
+{
+	"info": {
+		"_postman_id": "f950c372-fdb8-4e85-b0b0-d5af836fb1bd",
+		"name": "COMP3161-Project",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24996451"
+	},
+	"item": [
+		{
+			"name": "create_disc_thread",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"fid\": 1,\r\n    \"cid\": \"COMP10\",\r\n    \"uid\": 2,\r\n    \"tname\": \"The creation of the universe\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/create_disc_thread",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"create_disc_thread"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "submit_assignment",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"sid\": 128,\r\n    \"cid\": \"STAT29\",\r\n    \"aname\": \"Pythog 2\" \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/submit_assignment",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"submit_assignment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "grade_assignment",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"uid\": 1,\r\n    \"aid\": 1,\r\n    \"grade\": 80\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/grade_assignment",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"grade_assignment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "five_or_more",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "three_or_more",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "create_reply",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"tid\": 1,\r\n    \"fid\": 1,\r\n    \"cid\": \"MATH39\",\r\n    \"uid\": 2,\r\n    \"rname\": \"That isn't correct though\",\r\n    \"parent_rid\": 4\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/create_reply",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"create_reply"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "highest_average",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "most_enrolled",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "get_disc_thread",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "fifty_or_more",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	]
+}
