@@ -12,12 +12,18 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{url}}get_members/math1",
+					"raw": "{{url}}get_members/:id",
 					"host": [
 						"{{url}}get_members"
 					],
 					"path": [
-						"math1"
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "geo12"
+						}
 					]
 				}
 			},
@@ -29,15 +35,28 @@
 				"method": "POST",
 				"header": [],
 				"url": {
-					"raw": "{{url}}/create_course/frig534/freight rains dormant 4/11",
+					"raw": "{{url}}create_course/:cid/:ctitle/:uid",
 					"host": [
-						"{{url}}"
+						"{{url}}create_course"
 					],
 					"path": [
-						"create_course",
-						"frig534",
-						"freight rains dormant 4",
-						"11"
+						":cid",
+						":ctitle",
+						":uid"
+					],
+					"variable": [
+						{
+							"key": "cid",
+							"value": "geo12"
+						},
+						{
+							"key": "ctitle",
+							"value": "Trains in Motion"
+						},
+						{
+							"key": "uid",
+							"value": "12"
+						}
 					]
 				}
 			},
@@ -49,13 +68,23 @@
 				"method": "POST",
 				"header": [],
 				"url": {
-					"raw": "{{url}}enroll_course_lec/comp42/45",
+					"raw": "{{url}}enroll_course_lec/:cid/:uid",
 					"host": [
 						"{{url}}enroll_course_lec"
 					],
 					"path": [
-						"comp42",
-						"45"
+						":cid",
+						":uid"
+					],
+					"variable": [
+						{
+							"key": "cid",
+							"value": "geo12"
+						},
+						{
+							"key": "uid",
+							"value": "49"
+						}
 					]
 				}
 			},
@@ -67,13 +96,150 @@
 				"method": "POST",
 				"header": [],
 				"url": {
-					"raw": "{{url}}enroll_course_stud/frig113/64565",
+					"raw": "{{url}}enroll_course_stud/:cid/:uid",
 					"host": [
 						"{{url}}enroll_course_stud"
 					],
 					"path": [
-						"frig113",
-						"64565"
+						":cid",
+						":uid"
+					],
+					"variable": [
+						{
+							"key": "cid",
+							"value": "geo12"
+						},
+						{
+							"key": "uid",
+							"value": "58000"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create_section",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{url}}create_section/:cid/:secname",
+					"host": [
+						"{{url}}create_section"
+					],
+					"path": [
+						":cid",
+						":secname"
+					],
+					"variable": [
+						{
+							"key": "cid",
+							"value": "geo12"
+						},
+						{
+							"key": "secname",
+							"value": "The Wheel"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create_section_item",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{url}}create_section_item/:seid/:uid/:content",
+					"host": [
+						"{{url}}create_section_item"
+					],
+					"path": [
+						":seid",
+						":uid",
+						":content"
+					],
+					"variable": [
+						{
+							"key": "seid",
+							"value": "1"
+						},
+						{
+							"key": "uid",
+							"value": "23"
+						},
+						{
+							"key": "content",
+							"value": "Historical Conext"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create_forum",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "cid",
+							"value": "comp1",
+							"type": "text"
+						},
+						{
+							"key": "fname",
+							"value": "News",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{url}}create_forum/:cid/:fname",
+					"host": [
+						"{{url}}create_forum"
+					],
+					"path": [
+						":cid",
+						":fname"
+					],
+					"variable": [
+						{
+							"key": "cid",
+							"value": "comp12"
+						},
+						{
+							"key": "fname",
+							"value": "Announcements"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get_forums",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}get_forums/:id",
+					"host": [
+						"{{url}}get_forums"
+					],
+					"path": [
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "geo12"
+						}
 					]
 				}
 			},
