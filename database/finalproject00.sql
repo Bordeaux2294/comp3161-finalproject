@@ -15,3 +15,41 @@ CREATE TABLE discussionthread(tid int PRIMARY KEY NOT NULL AUTO_INCREMENT,  fid 
 CREATE TABLE reply(rid int PRIMARY KEY NOT NULL AUTO_INCREMENT,  tid int,  fid int,  cid varchar(100),  uid int,  rname varchar(255),  rdatecreated datetime,  rreplyamount int,FOREIGN KEY (cid) REFERENCES course(cid),FOREIGN KEY (fid) REFERENCES discussionforum(fid),FOREIGN KEY (tid) REFERENCES discussionthread(tid));
 CREATE TABLE assignment(aid int PRIMARY KEY NOT NULL AUTO_INCREMENT, sid int,cid varchar(100),aname varchar(255), agrade int, adatesubmitted datetime,FOREIGN KEY (cid) REFERENCES course(cid), FOREIGN KEY (sid) REFERENCES student(sid));
 CREATE TABLE event(evid int primary key NOT NULL AUTO_INCREMENT, cid varchar(100), uid int, ename varchar(255), edatecreated datetime, edateofevent datetime, FOREIGN KEY (cid) REFERENCES course(cid));
+
+SELECT uid, COUNT(*) AS num_courses
+FROM enroll
+GROUP BY uid
+HAVING num_courses > 6;
+
+SELECT s.sname, e.uid, COUNT(*) AS num_courses
+FROM enroll e
+JOIN student s ON s.sid = e.uid
+GROUP BY e.uid
+HAVING num_courses < 3;
+
+SELECT enroll.cid, COUNT(*) AS num_students
+FROM enroll
+GROUP BY enroll.cid
+HAVING num_students < 10;
+
+SELECT staff.stid, staff.stname, COUNT(*) AS num_courses
+FROM staff
+JOIN enroll ON staff.stid = enroll.uid
+GROUP BY staff.stid, staff.stname
+HAVING num_courses > 5;
+
+SELECT staff.stid, staff.stname, COUNT(*) AS num_courses
+FROM staff
+JOIN enroll ON staff.stid = enroll.uid
+GROUP BY staff.stid, staff.stname
+HAVING num_courses = 0;
+
+
+SELECT staff.stid, staff.stname, COUNT(*) AS num_courses
+FROM staff
+JOIN enroll ON staff.stid = enroll.uid
+WHERE enroll.etype = 'Lecturer'
+GROUP BY staff.stid, staff.stname
+HAVING num_courses < 1;
+
+
