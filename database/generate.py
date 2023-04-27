@@ -60,8 +60,7 @@ def pwdgenerator(length):
 
 
 uid_count = 1
-staff_count = 300000
-student_count = 600000
+staff_count = 1
 eid_count = 1
 
 admin_members = []
@@ -114,6 +113,7 @@ for course in courses:
 
 s_list = list(student_courses.items())
 
+student_count = uid_count + 1
 
 for stu in s_list:
     name = stu[0]
@@ -193,7 +193,7 @@ sublists = [queries[i:i+sublist_size] for i in range(0, len(queries), sublist_si
 
 queries2 =[]
 
-for i in range(40):
+for i in range(200):
     query = "INSERT INTO course (cid, ctitle) VALUES  ('{}', '{}');".format(course_pairs[i][0], course_pairs[i][1])
     queries2.append(query)
 
@@ -201,19 +201,19 @@ for i in range(40):
 Header1 = ['DROP DATABASE IF EXISTS school;', 'CREATE DATABASE school;', 'USE school;']
 
 Tables= [
-    "CREATE TABLE student(sid int PRIMARY KEY NOT NULL AUTO_INCREMENT, sname varchar(150), saddr varchar(255), stele varchar(255), semail varchar(255));",
-    "CREATE TABLE course(cid varchar(255) PRIMARY KEY NOT NULL, ctitle varchar(255));",
-    "CREATE TABLE staff(stid int PRIMARY KEY NOT NULL AUTO_INCREMENT, stname varchar(255), staddr varchar(255), sttele varchar(255), stemail varchar(255));",
-    "CREATE TABLE users(uid int PRIMARY KEY NOT NULL AUTO_INCREMENT, upwd varchar(255), utype varchar(255), uemail varchar(255));",
-    "CREATE TABLE enroll(eid int PRIMARY KEY NOT NULL AUTO_INCREMENT, uid int, cid varchar(255), etype varchar(255));",
-    "CREATE TABLE grades(eid int PRIMARY KEY NOT NULL, grade int);",
-    "CREATE TABLE section(seid int PRIMARY KEY NOT NULL, cid varchar(255), secname varchar(255));",
-    "CREATE TABLE sectionitem(ssid int PRIMARY KEY NOT NULL, seid int, uid int, ssdatecreated datetime);",
-    "CREATE TABLE discussionforum(fid int PRIMARY KEY NOT NULL, cid int, fname varchar(255), fdatecreated datetime, fthreadamt int);",
-    "CREATE TABLE discussionthread(tid int PRIMARY KEY NOT NULL, fid int, cid int, uid int, tname varchar(255), tdatecreated datetime, treplyamount int);",
-    "CREATE TABLE reply(rid int PRIMARY KEY NOT NULL, tid int, fid int, cid int, uid int, rname varchar(255), rdatecreated datetime, rreplyamount int);",
-    "CREATE TABLE assignment(aid int PRIMARY KEY NOT NULL, sid int, cid int, aname varchar(255), agrade int, adatesubmitted datetime);",
-    "CREATE TABLE event(evid int primary key NOT NULL, cid int, uid int, ename varchar(255), edatecreated datetime, edateofevent datetime);"
+    "CREATE TABLE student(sid int PRIMARY KEY NOT NULL AUTO_INCREMENT,sname varchar(150),saddr varchar(255),stele varchar(255),semail varchar(255));",
+    "CREATE TABLE course(cid varchar(100) PRIMARY KEY NOT NULL, ctitle varchar(255));",
+    "CREATE TABLE staff( stid int PRIMARY KEY NOT NULL AUTO_INCREMENT,  stname varchar(255), staddr varchar(255),  sttele varchar(255), stemail varchar(255));",
+    "CREATE TABLE users( uid int PRIMARY KEY NOT NULL AUTO_INCREMENT,  upwd varchar(255), utype varchar(255),   uemail varchar(255));",
+    "CREATE TABLE enroll(eid int PRIMARY KEY NOT NULL AUTO_INCREMENT,  uid int,  cid varchar(100),  etype varchar(255), FOREIGN KEY (uid) REFERENCES users(uid), FOREIGN KEY (cid) REFERENCES course(cid));",
+    "CREATE TABLE grades( eid int PRIMARY KEY NOT NULL,   grade int);",
+    "CREATE TABLE section(seid int PRIMARY KEY NOT NULL,  cid varchar(100),  secname varchar(255), FOREIGN KEY (cid) REFERENCES course(cid));",
+    "CREATE TABLE sectionitem(ssid int PRIMARY KEY NOT NULL,  seid int,  uid int,  content varchar(255), ssdatecreated datetime, FOREIGN KEY (seid) REFERENCES section(seid),  FOREIGN KEY (uid) REFERENCES users(uid));",
+    "CREATE TABLE discussionforum(fid int PRIMARY KEY NOT NULL,  cid varchar(100),  fname varchar(255),  fdatecreated datetime,  fthreadamt int, FOREIGN KEY (cid) REFERENCES course(cid));",
+    "CREATE TABLE discussionthread(tid int PRIMARY KEY NOT NULL,  fid int,   cid varchar(100),  uid int,  tname varchar(255),  tdatecreated datetime,   treplyamount int,FOREIGN KEY (cid) REFERENCES course(cid),FOREIGN KEY (fid) REFERENCES discussionforum(fid),FOREIGN KEY (uid) REFERENCES users(uid));",
+    "CREATE TABLE reply(rid int PRIMARY KEY NOT NULL,  tid int,  fid int,  cid varchar(100),  uid int,  rname varchar(255),  rdatecreated datetime,  rreplyamount int,FOREIGN KEY (cid) REFERENCES course(cid),FOREIGN KEY (fid) REFERENCES discussionforum(fid),FOREIGN KEY (tid) REFERENCES discussionthread(tid));",
+    "CREATE TABLE assignment(aid int PRIMARY KEY NOT NULL, sid int,cid varchar(100),aname varchar(255), agrade int, adatesubmitted datetime,FOREIGN KEY (cid) REFERENCES course(cid), FOREIGN KEY (sid) REFERENCES student(sid));",
+    "CREATE TABLE event(evid int primary key NOT NULL, cid varchar(100), uid int, ename varchar(255), edatecreated datetime, edateofevent datetime, FOREIGN KEY (cid) REFERENCES course(cid));"
 ]
 
 
